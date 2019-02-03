@@ -352,4 +352,71 @@ def find_motif(motif=None, sequence=None):
 
     return occurrences, motif_locations
 
+def consensus_and_profile(dna_dict):
+    """
+    Returns a consensus and profile for a dict of same-length DNA sequences.
 
+    Profile here is a matrix of the counts for each nucleotide base in each
+    position of a group of DNA sequences of the same length. Consensus is the
+    DNA sequence that is the likely ancester of all the sequences in the dict,
+    based on the frequency a particular base occurs in each position of that
+    sequence.
+
+    **Note problem parameters specify that profile rows are ordered A, C, G, T
+    Ex: A: 0 0 0 0 0 0
+        C: 0 0 0 0 0 0
+        G: 0 0 0 0 0 0
+        T: 0 0 0 0 0 0
+
+    :param dna_dict: A dict of dna sequences
+    :type dna_dict: dict
+    :rtype: list, list
+    :return: a profile matrix for the DNA sequences in dna_dict (returned as
+             a list of lists), a list of ALL POSSIBLE consensus strings
+    """
+    if len(dna_dict):
+        sequence_length = len(next(iter(dna_dict.values())))
+    else:
+        sequence_length = 0
+
+    profile_matrix = [[0]*sequence_length for x in range(0, 4)]
+    row_positions = { 0: 'A', 1: 'C', 2: 'G', 3:'T'}
+    consensus_list = ['',]
+
+    # Fill in the profile matrix
+    for key, value in dna_dict.items():
+        for position, base in enumerate(value):
+            if base.upper() == 'A':
+                profile_matrix[0][position] += 1
+            elif base.upper() == 'C':
+                profile_matrix[1][position] += 1
+            elif base.upper() == 'G':
+                profile_matrix[2][position] += 1
+            elif base.upper() == 'T':
+                profile_matrix[3][position] += 1
+            else:
+                m = "{0} is an invalid DNA sequence".format(key)
+                raise InvalidSequenceError(message=m)
+
+    # Write all possible consensus strings
+    for i in range(0, sequence_length):
+        base_counts = [profile_matrix[x][i] for x in range(0,4)]
+        max_count = max(base_counts)
+        base_indexes = [j for j, x in enumerate(base_counts) if x == max_count]
+
+        for i, base_index in enumerate(base_indexes):
+            consensus_list_copy = consensus_list
+            if i == 0:
+                # Only 1 consensus base to be added to existing strings
+                for j, consensus_string in enumerate(consensus_list):
+                    new_base = row_positions[base_index]
+                    consensus_list[j] = consensus_string + new_base
+            else:
+                # Multiple consensus bases to be added (requires branching)
+                new_branches = consensus_list_copy
+                for j, consensus_string in new_branches:
+                    new_base = row_positions[base_index]
+                    new_branches[j] = consensus_string + new_base
+                consensus_list += new_branches
+
+    return consensus_list, profile_matrix
