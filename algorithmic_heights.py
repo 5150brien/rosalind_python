@@ -49,3 +49,23 @@ def binary_search(reference_list, value_list):
         indexes.append(index)
 
     return indexes
+
+def degree_array(edge_file_path):
+    """
+    Returns a sorted list of the degrees for each vertex in an edge file
+    """
+    degree_counts = {}
+
+    with open(edge_file_path, "r") as edge_data:
+        for i, line in enumerate(edge_data):
+            edge = line.strip().split(" ")
+            if i == 0:
+                # First line is vertex & edge counts (not an edge)
+                total_vertices = int(edge[0])
+                for vertex in range(1, total_vertices + 1):
+                    degree_counts[vertex] = 0
+            else:
+                for vertex in edge:
+                    degree_counts[int(vertex)] += 1
+
+    return list(degree_counts.values())
