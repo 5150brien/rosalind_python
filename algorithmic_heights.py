@@ -53,6 +53,11 @@ def binary_search(reference_list, value_list):
 def degree_array(edge_file_path):
     """
     Returns a sorted list of the degrees for each vertex in an edge file
+
+    :param edge_file_path: the path to a file of data in edge list format
+    :type edge_file_path: str
+    :rtype: list
+    :return: a list of degrees for each vertex specified in edge_file_path
     """
     degree_counts = {}
 
@@ -69,3 +74,25 @@ def degree_array(edge_file_path):
                     degree_counts[int(vertex)] += 1
 
     return list(degree_counts.values())
+
+def insertion_sort(length, sort_list):
+    """
+    Finds the total number of swaps required to complete an insertion sort
+
+    :param length: the number of items in sort_list
+    :type length: int
+    :param sort_list: an unsorted list of numbers
+    :type sort_list: list
+    :rtype: int
+    :return: the number of swaps required to complete an insertion sort
+    """
+    swaps = 0
+    for i in range(1, length):
+        k = i
+        while k > 0 and sort_list[k] < sort_list[k - 1]:
+            sort_list[k - 1], sort_list[k] = sort_list[k], sort_list[k - 1]
+            swaps += 1
+            k -= 1
+
+    print(sort_list)
+    return swaps
