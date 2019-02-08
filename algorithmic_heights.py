@@ -59,7 +59,7 @@ def degree_array(edge_file_path):
     :rtype: list
     :return: a list of degrees for each vertex specified in edge_file_path
     """
-    degree_counts = {}
+    degree_counts = []
 
     with open(edge_file_path, "r") as edge_data:
         for i, line in enumerate(edge_data):
@@ -67,13 +67,12 @@ def degree_array(edge_file_path):
             if i == 0:
                 # First line is vertex & edge counts (not an edge)
                 total_vertices = int(edge[0])
-                for vertex in range(1, total_vertices + 1):
-                    degree_counts[vertex] = 0
+                degree_counts = [0 for x in range(total_vertices)]
             else:
                 for vertex in edge:
-                    degree_counts[int(vertex)] += 1
+                    degree_counts[int(vertex) - 1] += 1
 
-    return list(degree_counts.values())
+    return degree_counts
 
 def insertion_sort(length, sort_list):
     """
@@ -96,3 +95,38 @@ def insertion_sort(length, sort_list):
 
     print(sort_list)
     return swaps
+
+def double_degree_array(edge_file_path):
+    """
+    Calculates the degrees for all neighbors of each vertex in an edge file
+
+    :param edge_file_path: the path to a file of data in edge list format
+    :type edge_file_path: str
+    :rtype: list
+    :return: a list of total degrees for all neighbors of each vertex
+    """
+    neighbor_degrees = []
+
+    with open(edge_file_path, "r") as edge_data:
+        # Count the degrees and neighbors for each vertex
+        for i, line in enumerate(edge_data):
+            edge = line.strip().split(" ")
+            if i == 0:
+                length = int(edge[0])
+                degrees = [0 for x in range(length)]
+                neighbors = [[] for x in range(length)]
+            else:
+                a, b = int(edge[0]), int(edge[1])
+                degrees[a - 1] += 1
+                degrees[b - 1] += 1
+                neighbors[a - 1].append(int(edge[1]))
+                neighbors[b - 1].append(int(edge[0]))
+
+    # Sum the degrees of all neighbors for each vertex
+    for i, neighbor_group in enumerate(neighbors):
+        total = 0
+        for neighbor in neighbor_group:
+            total += degrees[neighbor - 1]
+        neighbor_degrees.append(total)
+
+    return neighbor_degrees
