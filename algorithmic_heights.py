@@ -130,3 +130,33 @@ def double_degree_array(edge_file_path):
         neighbor_degrees.append(total)
 
     return neighbor_degrees
+
+def majority_element(value_list):
+    """
+    Returns the majority element for value_list or -1 if there is none.
+
+    Majority element in a list of length n is a value that occurs
+    more than n/2 times. Implements Moore's Voting Algorithm.
+
+    :param value_list: a list of positive integers
+    :type value_list: list
+    :rtype: int
+    :return: the majority element or -1 if none exists
+    """
+    candidate = value_list[0]
+    count = 1
+
+    for val in value_list:
+        if candidate == val:
+            count += 1
+        else:
+            count -= 1
+
+        # majority element occurrences minus all others must be > 0
+        if count == 0:
+            candidate, count = val, 1
+
+    if value_list.count(candidate) > len(value_list) / 2:
+        return candidate
+    else:
+        return -1
