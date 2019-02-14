@@ -420,3 +420,28 @@ def consensus_and_profile(dna_dict):
                 consensus_list += new_branches
 
     return consensus_list, profile_matrix
+
+def mortal_fibonacci_rabbits(n, m):
+    """
+    Returns the rabbit population at month n for rabbits with m-month lifespan
+
+    The ages of rabbit pairs are tracked in a list of length m where each
+    element in the list represents the number of pairs aged list[i]. All adult
+    pairs mate every month (producing a 1-pair litter) and adults are shifted
+    over one position for each month they age until they fall off the list.
+
+    :param n: the number of months for which the population is considered
+    :type n: int
+    :param m: the lifespan of a rabbit, in months
+    :type m: int
+    :rtype: int
+    :return: the number of rabbits alive after n months
+    """
+    age_counts_by_month = [1] + ([0] * (m - 1))
+
+    for month in range(n - 1):
+        new_pairs = sum(age_counts_by_month[1:])
+        surviving_pairs = age_counts_by_month[:-1]
+        age_counts_by_month = [new_pairs] + surviving_pairs
+
+    return sum(age_counts_by_month)
