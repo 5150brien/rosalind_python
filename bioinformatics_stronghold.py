@@ -445,3 +445,24 @@ def mortal_fibonacci_rabbits(n, m):
         age_counts_by_month = [new_pairs] + surviving_pairs
 
     return sum(age_counts_by_month)
+
+def overlap_graphs(dna_dict):
+    """
+    Returns an adjacency list to describe an overlap graph for dna sequences
+
+    The overlap space, k, is defined to be exactly 3 for this problem.
+    
+    :param dna_dict: a dictionary of DNA sequences
+    :type dna_dict: dict
+    :rtype: list
+    :return: an adjacency list; each item is a list of 2 edges with overlap
+    """
+    k = 3
+    adjacency_list = []
+    for key1, sequence1 in dna_dict.items():
+        for key2, sequence2 in dna_dict.items():
+            if key1 != key2:
+                if sequence1[-k:] == sequence2[:k]:
+                    adjacency_list.append([key1, key2])
+
+    return adjacency_list
