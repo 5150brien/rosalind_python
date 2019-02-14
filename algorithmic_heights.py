@@ -160,3 +160,40 @@ def majority_element(value_list):
         return candidate
     else:
         return -1
+
+def merge_two_sorted_arrays(a, b):
+    """
+    Combines sorted lists a and b into a single, sorted list
+    """
+    c = []
+    i = 0
+    j = 0
+
+    while i < len(a) and j < len(b):
+        if a[i] < b[j]:
+            c.append(a[i])
+            i += 1
+        else:
+            c.append(b[j])
+            j += 1
+
+    if i < len(a):
+        c = c + a[i:]
+
+    if j < len(b):
+        c = c + b[j:]
+
+    return c
+
+def load_arrays(file_path):
+    """
+    Loads data for 'merge two sorted arrays' problem into two lists
+    """
+    with open(file_path, "r") as data:
+        for i, line in enumerate(data):
+            if i == 1:
+                a = [int(x) for x in line.strip().split(" ")]
+            if i == 3:
+                b = [int(x) for x in line.strip().split(" ")]
+
+        return a, b
