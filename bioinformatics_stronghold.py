@@ -1,5 +1,6 @@
 from decimal import Decimal
-from exceptions import InvalidSequenceError, SequenceLengthMismatchError
+from exceptions import (InvalidSequenceError, SequenceLengthMismatchError,
+                        PopulationError)
 
 def count_dna_nucleotides(dna_string):
     """
@@ -466,3 +467,38 @@ def overlap_graphs(dna_dict):
                     adjacency_list.append([key1, key2])
 
     return adjacency_list
+
+def calculate_expected_offspring(population):
+    """
+    Returns total offspring expected with dominant phenotype in a population
+
+    The population will be expressed as a list of six positive integers,
+    corresponding to the number of couples with the following genotypes:
+
+    1. AA + AA
+    2. AA + Aa
+    3. AA + aa
+    4. Aa + Aa
+    5. Aa + aa
+    6. aa + aa
+    
+    Each couple will produce exactly two offspring.
+
+    :param population_list: a list of the total couples with each genotype
+    :type population_list: list
+    :rtype: float
+    :return: the number of offspring expected to display the dominant phenotype
+    """
+    if len(population) == 6 and all(isinstance(x, int) for x in population):
+        # Couples in groups 1-3 will always have dominant phenotype offspring
+        a = 2 * (population[0] + population[1] + population[2])
+
+        # Couples in group 4 will have ~75% dominant phenotype offspring
+        b = 2 * population[3] * (3/4)
+
+        # Couples in group 5 will have ~50% dominant phenotype offspring
+        c = 2 * population[4] * (1/2)
+
+        return a + b + c
+    else:
+        raise PopulationError("population must consist of six integers")
