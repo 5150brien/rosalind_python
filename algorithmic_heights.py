@@ -197,3 +197,40 @@ def load_arrays(file_path):
                 b = [int(x) for x in line.strip().split(" ")]
 
         return a, b
+
+def two_sum(file_path):
+    """
+    Prints p, q such that A[p] = -A[q] in each of k lists of length n
+
+    Only one match of A[p] = -A[q] should be printed per list/line. If no
+    match is found, -1 is printed for the line.
+    
+    The data file format will contain two integers k and n, the total
+    number of lists and the length of each list, on the first line and a
+    list of n integers on each subsequent line.
+
+    :param file_path: the path to a file of two_sum problem data
+    :type file_path: str
+    :rtype: None
+    :return: None
+    """
+    with open(file_path, "r") as data:
+        for i, line in enumerate(data):
+            values = line.strip().split()
+            if i == 0:
+                # List length, n
+                n = int(values[1])
+            else:
+                inventory = {}
+                solved = False
+                for x in range(0, n):
+                    val = int(values[x])
+                    if -val in inventory and not solved:
+                        p = inventory[-val] + 1
+                        q = x + 1
+                        solved = True
+                        print(p, q)
+                    else:
+                        inventory[val] = x
+                if not solved:
+                    print("-1")
