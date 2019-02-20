@@ -1,5 +1,22 @@
 import unittest
-from bioinformatics_stronghold import valid_dna, valid_rna
+from exceptions import PopulationError
+from bioinformatics_stronghold import (valid_dna, valid_rna,
+                                       calculate_expected_offspring)
+
+
+class TestValidPopulation(unittest.TestCase):
+
+    def test_calculate_expected_offspring_input_handling(self):
+        pop_list_short = [0, 2]
+        pop_list_long = [24, 6, 1, 1, 4, 33, 75, 192, 12]
+
+        with self.assertRaises(PopulationError):
+            calculate_expected_offspring(pop_list_short)
+            self.fail("population cannot be fewer than six values")
+
+        with self.assertRaises(PopulationError):
+            calculate_expected_offspring(pop_list_short)
+            self.fail("population cannot be more than six values")
 
 
 class TestValidDNASequences(unittest.TestCase):
