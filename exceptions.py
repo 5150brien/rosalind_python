@@ -18,3 +18,14 @@ class SequenceLengthMismatchError(Exception):
 
     def __str__(self):
         return self.message
+
+
+class PopulationError(Exception):
+    def __init__(self, message=None):
+        if message:
+            self.message = message
+        else:
+            self.message = "Invalid population"
+
+    def __str__(self):
+        return self.message
