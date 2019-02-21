@@ -349,7 +349,7 @@ def find_motif(motif=None, sequence=None):
         if sequence[i:i+motif_length] == motif:
             motif_locations.append(i+1)
 
-    occurences = len(motif_locations)
+    occurrences = len(motif_locations)
 
     return occurrences, motif_locations
 
@@ -502,3 +502,21 @@ def calculate_expected_offspring(population):
         return a + b + c
     else:
         raise PopulationError("population must consist of six integers")
+
+def find_shared_motif(dna_dict):
+    """
+    Returns a longest common substring from a dictionary of DNA sequences
+    """
+    sequences = sorted(dna_dict.values(), key=len)
+    shortest = sequences.pop(0)
+    motif_length = len(shortest)
+    lcs = None
+
+    while motif_length > 0 and not lcs:
+        for start in range(len(shortest) - motif_length + 1):
+            motif = shortest[start:start + motif_length]
+            if all(find_motif(motif, s)[0] > 0 for s in sequences):
+                lcs = motif
+
+        motif_length -= 1
+    return lcs
