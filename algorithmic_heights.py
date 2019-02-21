@@ -234,3 +234,54 @@ def two_sum(file_path):
                         inventory[val] = x
                 if not solved:
                     print("-1")
+
+def parse_edge_file(file_path):
+    """
+    Returns graph data, given a file in edge file format
+
+    :param file_path: the path to an edge file
+    :type file_path: str
+    :rtype: tuple
+    :return: a 3-tuple with (1) the total number of vertices, (2) the total
+             number of edges, and (3) a list of edges, each of which is also a
+             (2-item) list
+    """
+    total_vertices = 0
+    total_edges = 0
+    edge_list = []
+
+    with open(file_path, "r") as data:
+        for i, line in enumerate(data):
+            values = line.strip().split(" ")
+            if i == 0:
+                total_vertices = int(values[0])
+                total_edges = int(values[1])
+            else:
+                u, v = int(values[0]), int(values[1])
+                edge_list.append([u, v])
+
+    return total_vertices, total_edges, edge_list
+
+def breadth_first_search(file_path, starting_point=1):
+    """
+    Returns a list of shortest path distances for a graph defined by an edge file
+    """
+    queue = []
+    vertices, _, edges = parse_edge_file(file_path)
+    distances = [-1 for x in range(0, vertices)]
+
+    distances[0] = 0
+    queue.append(starting_point)
+
+    while queue:
+        u = queue.pop(0)
+        for edge in edges:
+            if int(edge[0]) == u:
+                v = int(edge[1])
+                if distances[v - 1] == -1:
+                    queue.append(v)
+                    distances[v - 1] = distances[u - 1] + 1
+
+    #print(" ".join([str(x) for x in distances]))
+    return distances
+
