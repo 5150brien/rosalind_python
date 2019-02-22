@@ -285,3 +285,49 @@ def breadth_first_search(file_path, starting_point=1):
     #print(" ".join([str(x) for x in distances]))
     return distances
 
+def depth_first_search(edges, start):
+    """
+    Finds all vertices in an undirected graph that are accessible from a vertex
+
+    :param edges: a list of 2-member lists defining a graph's edges
+    :type edges: list
+    :param start: the name of vertex from which to begin exploring paths
+    :type start: int
+    :rtype: list
+    :return: a list of the vertices accessible from start
+    """
+    stack, explored = [start], []
+
+    while stack:
+        u = stack.pop()
+        if u not in explored:
+            explored.append(u)
+        for edge in edges:
+            if u == edge[0] and edge[1] not in explored:
+                # This is a new, unexplored neighbor
+                stack.append(edge[1])
+            elif u == edge[1] and edge[0] not in explored:
+                # This condition makes DFS work for UNdirected graphs
+                stack.append(edge[0])
+
+    return explored
+
+def connected_components(edge_file):
+    """
+    Returns the number of connected components in a graph
+
+    :param edge_file: the path to a file in edge format that defines a graph
+    :type edge_file: str
+    :rtype: int
+    :return: the number of connected components in the graph
+    """
+    explored = []
+    components = 0
+    total_vertices, _, edges = parse_edge_file(edge_file)
+
+    for x in range(1, total_vertices + 1):
+        if x not in explored:
+            explored += depth_first_search(edges, x)
+            components += 1
+
+    return components
