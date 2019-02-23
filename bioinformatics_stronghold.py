@@ -520,3 +520,33 @@ def find_shared_motif(dna_dict):
 
         motif_length -= 1
     return lcs
+
+def factorial(val):
+    """
+    Returns val! for any positive integer val
+    """
+    if val >= 0:
+        answer = 1
+        for x in range(0, val):
+            answer *= val - x
+
+        return answer
+    else:
+        msg = "Factorials of negative numbers equate to division by zero."
+        raise ZeroDivisionError(msg)
+
+def independent_alleles(k, n):
+    """
+    Finds the probability that at least n children in generation k are AaBb
+
+    Binomial cumulative distribution function: y!/(x! * (y - x)!) * (0.25^x) * (0.75^y)
+        -x is the desired outcome (at least n offspring) 
+        -y is the total trials (2^k children/generation)
+    """
+    p = 0.0
+    trials = 2**k
+    for generation in range(0, k):
+        p += (factorial(trials) / (factorial(trials - generation) \
+             * factorial(generation))) * (0.25**generation) * (0.75**(trials))
+
+    return p
