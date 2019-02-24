@@ -537,16 +537,21 @@ def factorial(val):
 
 def independent_alleles(k, n):
     """
-    Finds the probability that at least n children in generation k are AaBb
+    Finds the probability that at least n children in generation k are Aa/Bb
 
-    Binomial cumulative distribution function: y!/(x! * (y - x)!) * (0.25^x) * (0.75^y)
-        -x is the desired outcome (at least n offspring) 
-        -y is the total trials (2^k children/generation)
+    Uses binomial cumulative distribution function with a 'success rate' (the
+    probability of Aa allele * Bb allele in any offspring) over 2^k trials
+
+    :param k: the number of generations of reproduction to consider
+    :type k: int
+    :param n: the minimum number of successes observed (Aa/Bb offspring)
+    :type n: int
+    :rtype: float
+    :return: the probability of at least n Aa/Bb offspring in generation k
     """
-    p = 0.0
     trials = 2**k
-    for generation in range(0, k):
-        p += (factorial(trials) / (factorial(trials - generation) \
-             * factorial(generation))) * (0.25**generation) * (0.75**(trials))
-
+    p = 0.0
+    for x in range(n, trials + 1):
+        p += (factorial(trials) / (factorial(x) * factorial(trials - x))) \
+             * (0.25**x) * (0.75**(trials - x))
     return p
