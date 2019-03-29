@@ -1,4 +1,6 @@
+import re
 from decimal import Decimal
+from utilities import UniprotClient, factorial, list_permutations
 from exceptions import (InvalidSequenceError, SequenceLengthMismatchError,
                         PopulationError)
 
@@ -521,20 +523,6 @@ def find_shared_motif(dna_dict):
         motif_length -= 1
     return lcs
 
-def factorial(val):
-    """
-    Returns val! for any positive integer val
-    """
-    if val >= 0:
-        answer = 1
-        for x in range(0, val):
-            answer *= val - x
-
-        return answer
-    else:
-        msg = "Factorials of negative numbers equate to division by zero."
-        raise ZeroDivisionError(msg)
-
 def independent_alleles(k, n):
     """
     Finds the probability that at least n children in generation k are Aa/Bb
@@ -555,3 +543,56 @@ def independent_alleles(k, n):
         p += (factorial(trials) / (factorial(x) * factorial(trials - x))) \
              * (0.25**x) * (0.75**(trials - x))
     return p
+
+def find_protein_motif(protein_ids):
+    """
+    Searches uniprot for the N-glycosylation motif in a list of proteins
+
+    **Nota bene: results dictionary gives 0-based motif locations, but the 
+    print output provides 1-based formatting, as specified by the problem 
+    parameters.
+
+    :param protein_ids: a list of uniprot access id strings
+    :type protein_ids: list
+    :rtype: dict
+    :return: a dictionary of motif locations for each protein
+    """
+    motif = re.compile('(?=(N[ACDEFGHIKLMNQRSTVWY][ST][ACDEFGHIKLMNQRSTVWY]))')
+    results = {}
+
+    u = UniprotClient()
+    for _id in protein_ids:
+        results[_id] = []
+        data = u.get_protein(_id)
+        results[_id] = [x.start() for x in re.finditer(motif, data['sequence'])]
+    
+    # Problem-specific print formatting
+    for key, val in results.items():
+        print(key)
+        print(' '.join(str(v + 1) for v in val))
+
+    return results
+
+def enumerate_gene_orders(n):
+    """
+    Lists all permutations length n
+
+    :param n: The permutation length
+    :type n: int
+    :rtype: NoneType
+    :return: No return; problem parameters specify print formatting
+    """
+    if isinstance(n, int):
+        A = [x for x in range(1, n+1)]
+        p = list_permutations(A)
+
+        # Problem-specific print formatting
+        print(len(p))
+        for permutation in p:
+            print(' '.join(str(x) for x in permutation))
+
+        return p
+    else:
+        msg = "n must be an integer"
+        raise TypeError(msg)
+
