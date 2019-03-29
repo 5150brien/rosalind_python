@@ -568,8 +568,9 @@ def find_protein_motif(protein_ids):
     
     # Problem-specific print formatting
     for key, val in results.items():
-        print(key)
-        print(' '.join(str(v + 1) for v in val))
+        if val:
+            print(key)
+            print(' '.join(str(v + 1) for v in val))
 
     return results
 
