@@ -218,6 +218,20 @@ def valid_rna(rna_string):
             return True
     return False
 
+def valid_amino_acid(aa):
+    """
+    Returns True if aa is a valid amino acid, otherwise returns False
+    """
+    if isinstance(aa, str) and len(aa) == 1:
+        valid_aas = [
+            'A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L',
+            'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y'
+        ]
+
+        if aa.upper() in valid_aas:
+            return True
+    return False
+
 def mendelian_inheritance(k, m, n):
     """
     Determines the probability of offspring expressing a dominant factor.
@@ -597,3 +611,36 @@ def enumerate_gene_orders(n):
         msg = "n must be an integer"
         raise TypeError(msg)
 
+def calculate_protein_mass(protein_sequence):
+    """
+    Calculates the weight of a protein as the sum of amino acid masses
+
+    Monoisotopic masses are given in Daltons/atomic mass units.
+
+    :param protein_sequence: the AA sequence defining the protein
+    :type protein_sequence: str
+    :rtype: float
+    :return: the total weight of protein_sequence in Daltons (Da)
+    """
+    monoisotopic_masses = {
+        "A": 71.03711, "C": 103.00919, "D": 115.02694, "E": 129.04259,
+        "F": 147.06841, "G": 57.02146, "H": 137.05891, "I": 113.08406,
+        "K": 128.09496, "L": 113.08406, "M": 131.04049, "N": 114.04293,
+        "P": 97.05276, "Q": 128.05858, "R": 156.10111, "S": 87.03203,
+        "T": 101.04768, "V": 99.06841, "W": 186.07931, "Y": 163.06333,
+    }
+
+    if isinstance(protein_sequence, str):
+        total_weight = 0.0
+        for aa in protein_sequence:
+            if valid_amino_acid(aa):
+                aa_weight = monoisotopic_masses[aa]
+                total_weight += aa_weight
+            else:
+                aa_msg = "protein_sequence contained an invalid amino acid"
+                raise InvalidSequenceError(aa_msg)
+
+        return round(total_weight, 3)
+    else:
+        type_msg = "protein_sequence must be a string"
+        raise TypeError(type_msg)
